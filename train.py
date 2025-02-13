@@ -63,7 +63,6 @@ for epoch in range(n_epochs):
         _i = torch.randperm(batch_size * 2)
         ic(x_train.shape)
         ic(y_train.shape)
-        # TODO: shuffle
 
         # discrimination
         y_pred = discriminator(x_train, label)
