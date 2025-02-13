@@ -56,8 +56,6 @@ for epoch in range(n_epochs):
 
         # build batch: concat and shuffle
         x_train = torch.concat([x_train, x_generated])
-        ic(torch.Tensor(REAL_IMAGE).repeat(batch_size).shape)
-        ic(torch.Tensor(REAL_IMAGE).repeat(batch_size).shape)
         y_train = torch.concat([torch.full((batch_size, ), REAL_IMAGE),
                                 torch.full((batch_size, ), FAKE_IMAGE)])
         _i = torch.randperm(batch_size * 2)
