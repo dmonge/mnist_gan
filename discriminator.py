@@ -11,13 +11,13 @@ FAKE_IMAGE = 0.0
 
 class Discriminator(nn.Module):
 
-    def __init__(self, img_size, hidden_size):
+    def __init__(self, img_size, hidden_size, mbd_in_features=100, mbd_out_features=50, mbd_kernel_dims=5):
         super().__init__()
         self.conv1 = self.conv_block(1, hidden_size // 2)
         self.conv2 = self.conv_block(hidden_size // 2, hidden_size)
-        self.fc1 = nn.utils.spectral_norm(nn.Linear(hidden_size * img_size // 4 * img_size // 4, 100))
-        self.disc = MinibatchDiscrimination(100, 50, 5)
-        self.fc2 = nn.Linear(100 + 50, 1)
+        self.fc1 = nn.utils.spectral_norm(nn.Linear(hidden_size * img_size // 4 * img_size // 4, mbd_in_features))
+        self.disc = MinibatchDiscrimination(100, mbd_out_features, mbd_kernel_dims)
+        self.fc2 = nn.Linear(mbd_in_features + mbd_out_features, 1)
 
     def conv_block(self, in_filters, out_filters):
         return nn.Sequential(
