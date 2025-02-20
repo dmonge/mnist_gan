@@ -14,14 +14,15 @@ class Generator(nn.Module):
         self.input = self.input_block(latent_size, n_classes, hidden_size, img_size)
         self.deconv1 = self.deconv_block(hidden_size, hidden_size // 2)
         self.deconv2 = self.deconv_block(hidden_size // 2, hidden_size // 4)
-        self.deconv3 = nn.ConvTranspose2d(hidden_size // 4, 1, kernel_size=3, stride=1, padding=1)
+        self.deconv3 = nn.ConvTranspose2d(hidden_size // 4, 1, kernel_size=4, stride=2, padding=1)
+        self.upsample = nn.Upsample(size=(img_size, img_size), mode='bilinear')
 
     def input_block(self, latent_size, n_classes, hidden_size, img_size):
         in_features = latent_size + n_classes
-        out_featues = hidden_size * img_size // 4 * img_size // 4
+        out_features = hidden_size * (img_size // 8) * (img_size // 8)
         return nn.Sequential(
-            nn.Linear(in_features, out_featues),
-            nn.BatchNorm1d(out_featues),
+            nn.Linear(in_features, out_features),
+            nn.BatchNorm1d(out_features),
             nn.ReLU(),
         )
 
@@ -34,10 +35,9 @@ class Generator(nn.Module):
 
     def forward(self, x):
         x = self.input(x)
-        x = x.view(x.shape[0], self.hidden_size, self.img_size // 4, self.img_size // 4)
+        x = x.view(x.shape[0], self.hidden_size, self.img_size // 8, self.img_size // 8)
         x = self.deconv1(x)
         x = self.deconv2(x)
         x = self.deconv3(x)
+        x = self.upsample(x)
         return F.tanh(x)
-
-
