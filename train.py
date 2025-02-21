@@ -177,6 +177,7 @@ with torch.no_grad():
     plt.imshow(grid.permute(1, 2, 0), vmin=0, vmax=1)
     plt.axis('off')
     plt.title('Generated digits')
-    plt.savefig('generated_digits.png')
     plt.tight_layout()
     plt.show()
+
+    plt.imsave('generated_digits.png', grid.permute(1, 2, 0), vmin=0, vmax=1)
